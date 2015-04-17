@@ -4,6 +4,7 @@
     <declare-styleable name="WheelView">
         <attr name="isShowShadow" format="boolean" />
         <attr name="centerBGDrawable" format="reference"/>
+        <attr name="centerLineDrawable" format="reference"/>
     </declare-styleable>
 
 </resources>

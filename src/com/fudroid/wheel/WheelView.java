@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.database.DataSetObserver;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
@@ -26,6 +27,10 @@ import com.fudroid.wheel.demo.R;
  * @author Yuri Kanivets
  */
 public class WheelView extends View {
+
+	private boolean isShowShadow = false;
+
+	private Drawable lineDrawable;
 
 	/** Top and bottom shadows colors */
 	private static final int[] SHADOWS_COLORS = new int[] { 0xFF111111,
@@ -86,23 +91,21 @@ public class WheelView extends View {
 	 */
 	public WheelView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
-		initData(context);
+		initData(context, attrs);
 	}
 
 	/**
 	 * Constructor
 	 */
 	public WheelView(Context context, AttributeSet attrs) {
-		super(context, attrs);
-		initData(context);
+		this(context, attrs, -1);
 	}
 
 	/**
 	 * Constructor
 	 */
 	public WheelView(Context context) {
-		super(context);
-		initData(context);
+		this(context, null);
 	}
 
 	/**
@@ -111,8 +114,26 @@ public class WheelView extends View {
 	 * @param context
 	 *            the context
 	 */
-	private void initData(Context context) {
+	private void initData(Context context, AttributeSet attrs) {
 		scroller = new WheelScroller(getContext(), scrollingListener);
+		initResourcesIfNecessary();
+		TypedArray a = context.obtainStyledAttributes(attrs,
+				R.styleable.WheelView);
+
+		// Get the provided drawable from the XML
+		final Drawable line = a
+				.getDrawable(R.styleable.WheelView_centerLineDrawable);
+		if (line != null) {
+			lineDrawable = line;
+		} else {
+			final Drawable centerBG = a
+					.getDrawable(R.styleable.WheelView_centerBGDrawable);
+			if (centerBG != null) {
+				centerDrawable = centerBG;
+			}
+		}
+
+		a.recycle();
 	}
 
 	// Scrolling listener
@@ -458,8 +479,6 @@ public class WheelView extends View {
 			bottomShadow = new GradientDrawable(Orientation.BOTTOM_TOP,
 					SHADOWS_COLORS);
 		}
-
-		setBackgroundResource(R.drawable.wheel_bg);
 	}
 
 	/**
@@ -508,7 +527,6 @@ public class WheelView extends View {
 	 * @return the calculated control width
 	 */
 	private int calculateLayoutWidth(int widthSize, int mode) {
-		initResourcesIfNecessary();
 		// TODO: make it static
 		itemsLayout.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT,
 				LayoutParams.WRAP_CONTENT));
@@ -592,8 +610,9 @@ public class WheelView extends View {
 			drawItems(canvas);
 			drawCenterRect(canvas);
 		}
-
-		drawShadows(canvas);
+		if (isShowShadow) {
+			drawShadows(canvas);
+		}
 	}
 
 	/**
@@ -639,9 +658,18 @@ public class WheelView extends View {
 	private void drawCenterRect(Canvas canvas) {
 		int center = getHeight() / 2;
 		int offset = (int) (getItemHeight() / 2 * 1.2);
-		centerDrawable.setBounds(0, center - offset, getWidth(), center
-				+ offset);
-		centerDrawable.draw(canvas);
+		if (lineDrawable != null) {
+			lineDrawable.setBounds(0, center - offset, getWidth(), center
+					- offset + 1);
+			lineDrawable.draw(canvas);
+			lineDrawable.setBounds(0, center + offset, getWidth(), center
+					+ offset + 1);
+			lineDrawable.draw(canvas);
+		} else {
+			centerDrawable.setBounds(0, center - offset, getWidth(), center
+					+ offset);
+			centerDrawable.draw(canvas);
+		}
 	}
 
 	@Override

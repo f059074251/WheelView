@@ -33,7 +33,9 @@ public class TimeActivity extends Activity {
 		hours.setCyclic(true);
 
 		final WheelView mins = (WheelView) findViewById(R.id.mins);
-		mins.setViewAdapter(new NumericWheelAdapter(this, 0, 59, "%02d"));
+		NumericWheelAdapter nwMin = new NumericWheelAdapter(this, 0, 59, "%02d");
+		nwMin.setTextColor(Color.GRAY);
+		mins.setViewAdapter(nwMin);
 		mins.setCyclic(true);
 
 		final TimePicker picker = (TimePicker) findViewById(R.id.time);

@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:layout_height="fill_parent"
 	android:layout_width="fill_parent"
 	android:layout_marginTop="12dp"
 	android:orientation="vertical"
-	android:background="@drawable/layout_bg">
+	android:background="@android:color/white">
 	
 	<LinearLayout 
 		android:layout_height="wrap_content"
@@ -17,9 +18,11 @@
 	  
 	  	<com.fudroid.wheel.WheelView android:id="@+id/hour"
 			android:layout_height="wrap_content"
+			app:centerLineDrawable="@android:color/darker_gray"
 			android:layout_width="140dp"/>
 		<com.fudroid.wheel.WheelView android:id="@+id/mins"
 			android:layout_height="wrap_content"
+			app:centerLineDrawable="@android:color/darker_gray"
 			android:layout_width="140dp"/>
 	</LinearLayout>
 	
